@@ -25,12 +25,11 @@
         w:'weibo.com',
         e:'ele.me',
         r:'renren.com',
-        y:'youtube.com',
-        u:'uc.com',
+        y:'cidian.youdao.com',
         b:'baidu.com',
         i:'iqiyi.com',
         o:'opera.com',
-        a:'acfun.tv',
+        a:'amazon.cn',
         z:'zhihu.com',
         m:'www.mcdonalds.com.cn'
     };
@@ -55,7 +54,15 @@
             button.textContent="编辑";
             button.id=row[index2];
             img=document.createElement('img');
-            img.src="http://"+hash[row[index2]]+"/favicon.ico";
+            if(hash[row[index2]]){
+                img.src="http://"+hash[row[index2]]+"/favicon.ico";
+            }
+            else{
+                img.src="./img/pictureXi.jpg";
+            }
+            img.onerror=function(e){
+                e.target.src="./img/pictureXi.jpg";
+            };
             kbd.appendChild(img);
             button.onclick=function(e){
                 key= e.target.id;
