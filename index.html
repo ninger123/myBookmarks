@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background: #3a3a3a;
+        }
+        kbd{
+            border:1px solid #fff;
+            width: 4em;
+            height: 4em;
+            display: inline-block;
+            margin: 5px;
+            line-height: 4em;
+            text-align: center;
+            font-weight: bold;
+            color:#999;
+            border-radius: 5px;
+            text-transform: uppercase;
+
+            border-top: 1px solid #fff;
+            border-bottom: 1px solid #eee;
+
+            position: relative;
+            box-shadow: inset 0 0 2em rgba(0,0,0,.05), 0 3px 0 #ddd, 0 3px 2px rgba(0,0,0,.5);
+        }
+        kbd button{
+            border: none;
+            color: #4e4e4e;
+            font-size: 10px;
+            position: absolute;
+            right: 0;
+            bottom:0;
+            display: none;
+        }
+        kbd:hover button{
+            display: inline-block;
+        }
+        main{
+            width: 1000px;
+            margin: 10% auto;
+            text-align: center;
+        }
+        #mainer{
+            display: inline-block;
+        }
+        div:nth-child(2){
+            margin-left: 1.2em;
+        }
+        div:nth-child(3){
+            margin-left: -0.8em;
+        }
+
+    </style>
+</head>
+<body>
+<header></header>
+<main>
+    <div id="mainer">
+
+    </div>
+</main>
+<footer></footer>
+<script>
+    var keys={
+        0:{0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p',length:10},
+        1:{0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l',length:9},
+        2:{0:'z',1:'x',2:'c',3:'v',4:'b',5:'n',6:'m',length:7},
+        length:3
+    };
+    var hash={
+        q:'qq.com',
+        w:'weibo.com',
+        e:'ele.me',
+        r:'renren.com',
+        t:'tianya.com',
+        y:'youtube.com',
+        u:'uc.com',
+        i:'iqiyi.com',
+        o:'opera.com',
+        p:undefined,
+        a:'acfun.tv',
+        z:'zhihu.com',
+        m:'www.mcdonalds.com.cn'
+    };
+    var hashInLocalStorage=JSON.parse(localStorage.getItem('newhash')||'null');
+    if(hashInLocalStorage){
+        hash=hashInLocalStorage;
+    }
+
+    //遍历keys,生成kbd标签
+    var index=0;
+    while(index<keys['length']){
+        div1=document.createElement('div');
+        mainer=document.getElementById('mainer');
+        mainer.appendChild(div1);
+        row=keys[index];   //第一个数组 第二个数组 第三个数组
+        var index2=0;
+        while(index2<row.length){   //0-9   0-8   0-6
+            kbd=document.createElement('kbd');
+            kbd.textContent=row[index2];
+            button=document.createElement('button');
+            kbd.appendChild(button);
+            button.textContent="编辑";
+            button.id=row[index2];
+            button.onclick=function(e){
+                key= e.target.id;
+                uesr_input=prompt("请输入一个网址:");
+                hash[key]=uesr_input;   //hash变更
+                localStorage.setItem('newhash',JSON.stringify(hash));
+
+            };
+            div1.appendChild(kbd);
+            index2++;
+        }
+        index++;
+    }
+
+    document.onkeypress=function(e){
+        key= e.key;
+        website=hash[key];
+        //location.href ='http://'+website;
+        window.open('http://'+website,'_blank');
+    }
+
+</script>
+</body>
+</html>
