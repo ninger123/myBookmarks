@@ -14,76 +14,121 @@
 </main>
 <footer></footer>
 <script>
-    var keys={
-        0:{0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p',length:10},
-        1:{0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l',length:9},
-        2:{0:'z',1:'x',2:'c',3:'v',4:'b',5:'n',6:'m',length:7},
-        length:3
-    };
-    var hash={
-        q:'lol.qq.com',
-        w:'weibo.com',
-        e:'ele.me',
-        r:'renren.com',
-        y:'cidian.youdao.com',
-        b:'baidu.com',
-        i:'iqiyi.com',
-        o:'opera.com',
-        a:'amazon.cn',
-        z:'zhihu.com',
-        m:'www.mcdonalds.com.cn'
-    };
-    var hashInLocalStorage=JSON.parse(localStorage.getItem('newhash')||'null');
-    if(hashInLocalStorage){
-        hash=hashInLocalStorage;
-    }
+    //1.初始化数据
+    var hashA=init();
+    var keys=hashA['keys'];
+    var hash=hashA['hash'];
 
+    //2.生成键盘
     //遍历keys,生成kbd标签
-    var index=0;
-    while(index<keys['length']){
-        div1=document.createElement('div');
-        mainer=document.getElementById('mainer');
-        mainer.appendChild(div1);
-        row=keys[index];   //第一个数组 第二个数组 第三个数组
-        var index2=0;
-        while(index2<row.length){   //0-9   0-8   0-6
-            kbd=document.createElement('kbd');
-            kbd.textContent=row[index2];
-            button=document.createElement('button');
-            kbd.appendChild(button);
-            button.textContent="编辑";
-            button.id=row[index2];
-            img=document.createElement('img');
-            if(hash[row[index2]]){
-                img.src="http://"+hash[row[index2]]+"/favicon.ico";
-            }
-            else{
-                img.src="./img/pictureXi.jpg";
-            }
-            img.onerror=function(e){
-                e.target.src="./img/pictureXi.jpg";
-            };
-            kbd.appendChild(img);
-            button.onclick=function(e){
-                key= e.target.id;
-                uesr_input=prompt("请输入一个网址:");
-                hash[key]=uesr_input;   //hash变更
-                localStorage.setItem('newhash',JSON.stringify(hash));
+    generateKeyboard(keys,hash);
 
-            };
-            div1.appendChild(kbd);
-            index2++;
+
+    //3.监听用户动作
+    listenToUser(hash);
+
+
+
+    //私有函数
+    function init(){
+        var keys={
+            0:{0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p',length:10},
+            1:{0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l',length:9},
+            2:{0:'z',1:'x',2:'c',3:'v',4:'b',5:'n',6:'m',length:7},
+            length:3
+        };
+        var hash={
+            q:'lol.qq.com',
+            w:'weibo.com',
+            e:'ele.me',
+            r:'renren.com',
+            y:'cidian.youdao.com',
+            b:'baidu.com',
+            i:'iqiyi.com',
+            o:'opera.com',
+            a:'amazon.cn',
+            z:'zhihu.com',
+            m:'www.mcdonalds.com.cn'
+        };
+        var hashInLocalStorage=getFromLocalStorage('newhash');
+        if(hashInLocalStorage){
+            hash=hashInLocalStorage;
         }
-        index++;
+        return{
+            "keys":keys,
+            "hash":hash
+        }
     }
 
-    document.onkeypress=function(e){
-        key= e.key;
-        website=hash[key];
-        //location.href ='http://'+website;
-        window.open('http://'+website,'_blank');
+    function getFromLocalStorage(tagName){
+       return JSON.parse(localStorage.getItem(tagName)||'null');
     }
 
+    function generateKeyboard(keys,hash){
+        for(var index=0;index<keys['length'];index++){
+            var div1=tag('div');
+            var mainer=document.getElementById('mainer');
+            mainer.appendChild(div1);
+
+            var row=keys[index];   //第一个数组 第二个数组 第三个数组
+            for(index2=0;index2<row.length;index2++){
+                var kbd=tag('kbd');
+                kbd.textContent=row[index2];
+
+                var button=tag('button');
+                kbd.appendChild(button);
+                button.textContent="编辑";
+                button.id=row[index2];
+
+                var img=createImage(hash[row[index2]]);
+
+                kbd.appendChild(img);
+                button.onclick=function(e){
+                    var button2= e.target;
+                    img2=button2.nextSibling;
+                    var key= button2.id;
+                    user_input=prompt("请输入一个网址:");
+                    hash[key]=user_input;   //hash变更
+                    img2.src="http://"+user_input+"/favicon.ico";
+                    img2.onerror=function(e){
+                        e.target.src="./img/pictureXi.jpg";
+                    };
+                    localStorage.setItem('newhash',JSON.stringify(hash));
+
+                };
+                div1.appendChild(kbd);
+            }
+
+        }
+    }
+
+    function tag(tagName){
+        return document.createElement(tagName);
+    }
+
+    function createImage(domain){
+        var img=tag('img');
+        if(domain){
+            img.src="http://"+domain+"/favicon.ico";
+        }
+        else{
+            img.src="./img/pictureXi.jpg";
+        }
+        img.onerror=function(e){
+            e.target.src="./img/pictureXi.jpg";
+        };
+        return img;
+
+    }
+
+    function listenToUser(hash){
+        document.onkeypress=function(e){
+            var key= e.key;
+            var website=hash[key];
+            //location.href ='http://'+website;
+            window.open('http://'+website,'_blank');
+        }
+    }
 </script>
 </body>
 </html>
